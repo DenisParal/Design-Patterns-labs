@@ -35,6 +35,8 @@ class Student : public IListener
 protected:
 	const char* name;
 	Student(const char* student_name);
+public:
+	void get_name() const;
 };
 
 class Notebook

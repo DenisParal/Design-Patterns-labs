@@ -20,6 +20,10 @@ void Speaker::speak(const Room& room) const
 Speaker::Speaker(const char* name) :name(name) {}
 
 Student::Student(const char* student_name) :name(student_name) {}
+void Student::get_name() const
+{
+	std::cout << name;
+}
 
 Notebook::Notebook(unsigned int notebook_size) : size(notebook_size), empty_page(0)
 {
