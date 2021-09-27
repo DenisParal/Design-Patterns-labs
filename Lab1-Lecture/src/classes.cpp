@@ -17,12 +17,17 @@ void Speaker::speak(const Room& room) const
 	room.distribute(Echo("some noise"));
 }
 
+const char* Speaker::get_name() const
+{
+	return name;
+}
+
 Speaker::Speaker(const char* name) :name(name) {}
 
 Student::Student(const char* student_name) :name(student_name) {}
-void Student::get_name() const
+const char* Student::get_name() const
 {
-	std::cout << name;
+	return  name;
 }
 
 Notebook::Notebook(unsigned int notebook_size) : size(notebook_size), empty_page(0)

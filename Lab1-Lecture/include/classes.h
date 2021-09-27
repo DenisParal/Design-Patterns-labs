@@ -27,6 +27,7 @@ private:
 public:
 	void listen(const Echo& echo) override;
 	void speak(const Room& room) const;
+	const char* get_name() const;
 	Speaker(const char* name);
 };
 
@@ -36,7 +37,7 @@ protected:
 	const char* name;
 	Student(const char* student_name);
 public:
-	void get_name() const;
+	const char* get_name() const;
 };
 
 class Notebook
