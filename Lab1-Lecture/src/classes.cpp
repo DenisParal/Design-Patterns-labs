@@ -35,6 +35,14 @@ Notebook::Notebook(unsigned int notebook_size) : size(notebook_size), empty_page
 	information = new const char* [size];
 }
 
+Notebook::~Notebook()
+{
+	for(int i = 0; i < empty_page; i++)
+	{
+		delete information[i];
+	}
+}
+
 void Notebook::print() const
 {
 	for (int i = 0; i < empty_page; i++)

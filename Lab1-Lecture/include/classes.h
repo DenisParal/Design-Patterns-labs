@@ -50,6 +50,7 @@ private:
 public:
 	void print() const;
 	Notebook(unsigned int size);
+	~Notebook();
 };
 
 class Bachelord : public Student
