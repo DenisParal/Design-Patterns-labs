@@ -47,3 +47,11 @@ IPoint* Bezier::get_point(double t)
     return new Point(std::pow((1 - t), 3) * a->get_x() + 3 * t * std::pow((1 - t), 2) * c->get_x() + 3 * std::pow(t, 2) * (1 - t) * d->get_x() + std::pow(t, 3) * b->get_x(),
                      std::pow((1 - t), 3) * a->get_y() + 3 * t * std::pow((1 - t), 2) * c->get_y() + 3 * std::pow(t, 2) * (1 - t) * d->get_y() + std::pow(t, 3) * b->get_y());
 }
+
+//class VisualLine
+
+VisualLine::VisualLine(IPoint* a_ptr, IPoint* b_ptr): Line(a_ptr, b_ptr){}
+
+//class VisualBezier
+
+VisualBezier::VisualBezier(IPoint* a_ptr, IPoint* c_ptr, IPoint* d_ptr, IPoint* b_ptr): Bezier(a_ptr, c_ptr, d_ptr, b_ptr) {}

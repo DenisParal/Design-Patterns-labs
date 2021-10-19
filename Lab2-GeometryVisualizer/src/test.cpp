@@ -1,4 +1,5 @@
 #include "classes.h"
+#include "drawing_tool.h"
 #include <iostream>
 
 int main()
@@ -14,4 +15,7 @@ int main()
 
     std::cout << r1->get_x() << " " << r1->get_y() << "\n";
     std::cout << r2->get_x() << " " << r2->get_y() << "\n";
+
+    auto dr = drawing_tool::get();
+    system("pause");
 }
