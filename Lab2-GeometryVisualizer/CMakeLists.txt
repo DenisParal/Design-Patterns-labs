@@ -13,14 +13,13 @@ set(visual_header ${header_path}/drawing_tool.h)
 set(visual_src ${src_path}/drawing_tool.cpp)
 
 
-
-add_library(${PROJECT_NAME} SHARED ${header} ${src})
+add_library(${PROJECT_NAME} SHARED ${header} ${src} ${visual_header} ${visual_src})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${header_path})
-
-add_library(Visualizer SHARED ${visual_header} ${visual_src})
-target_include_directories(Visualizer PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${header_path})
+target_link_options(${PROJECT_NAME} PUBLIC -lsfml-graphics -lsfml-window -lsfml-system)
+target_compile_options(${PROJECT_NAME} PUBLIC -lsfml-graphics -lsfml-window -lsfml-system)
 
 add_executable(test1 ${src_path}/test.cpp)
+target_link_options(test1 PUBLIC -lsfml-graphics -lsfml-window -lsfml-system)
 target_compile_options(test1 PUBLIC -lsfml-graphics -lsfml-window -lsfml-system)
 
-target_link_libraries(test1 ${PROJECT_NAME} Visualizer)
+target_link_libraries(test1 ${PROJECT_NAME})

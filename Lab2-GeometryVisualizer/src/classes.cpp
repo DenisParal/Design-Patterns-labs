@@ -1,4 +1,5 @@
 #include "classes.h"
+#include "drawing_tool.h"
 #include <cmath>
 
 // class Point realization
@@ -50,8 +51,35 @@ IPoint* Bezier::get_point(double t)
 
 //class VisualLine
 
-VisualLine::VisualLine(IPoint* a_ptr, IPoint* b_ptr): Line(a_ptr, b_ptr){}
+VisualLine::VisualLine(IPoint* a_ptr, IPoint* b_ptr): Line(a_ptr, b_ptr) {}
+void VisualLine::draw()
+{
+    auto drawer = drawing_tool::get();
+    for(float t=0.1f; t<1.0f;t+=0.1f)
+    {
+        drawer->draw_line(get_point(t-0.1f)->get_x(), get_point(t-0.1f)->get_y(), get_point(t)->get_x(), get_point(t)->get_y());
+    }
+}
+
+IPoint* VisualLine::get_point(double t)
+{
+    return Line::get_point(t);
+}
 
 //class VisualBezier
 
 VisualBezier::VisualBezier(IPoint* a_ptr, IPoint* c_ptr, IPoint* d_ptr, IPoint* b_ptr): Bezier(a_ptr, c_ptr, d_ptr, b_ptr) {}
+
+IPoint* VisualBezier::get_point(double t)
+{
+    return Bezier::get_point(t);
+}
+
+void VisualBezier::draw()
+{
+    auto drawer = drawing_tool::get();
+    for(float t=0.0f; t<1.0f;t+=0.1f)
+    {
+        drawer->draw_line(get_point(t-0.1f)->get_x(), get_point(t-0.1f)->get_y(), get_point(t)->get_x(), get_point(t)->get_y());
+    }
+}

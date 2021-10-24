@@ -69,6 +69,7 @@ class VisualLine : public VisualCurve, public Line
 {
 public:
     VisualLine(IPoint* a_ptr, IPoint* b_ptr);
+    IPoint* get_point(double t) override;
     void draw() override;
 };
 
@@ -76,5 +77,6 @@ class VisualBezier : public VisualCurve, public Bezier
 {
 public:
     VisualBezier(IPoint* a_ptr, IPoint* c_ptr, IPoint* d_ptr, IPoint* b_ptr);
+    IPoint* get_point(double t) override;
     void draw() override;
 };

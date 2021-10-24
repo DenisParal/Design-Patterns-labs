@@ -9,6 +9,9 @@ private:
     drawing_tool();
     drawing_tool(const drawing_tool&)=delete;
 public:
+    bool state = false;
     static drawing_tool* get();
+    void wait();
+    void draw_line(float, float, float, float);
     ~drawing_tool();
 };
