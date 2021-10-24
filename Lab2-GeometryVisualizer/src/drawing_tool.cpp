@@ -1,21 +1,6 @@
 #include "drawing_tool.h"
 
 drawing_tool* drawing_tool::entity=nullptr;
-// void renderingThread(sf::RenderWindow* window)
-// {
-//     window->setActive(true);
-
-//     while (window->isOpen())
-//     {
-//         sf::Event event;
-//         while (window->pollEvent(event))
-//         {
-//             if (event.type == sf::Event::Closed)
-//                 window->close();
-//         }
-//         window->display();
-//     }
-// }
 
 drawing_tool* drawing_tool::get()
 {
