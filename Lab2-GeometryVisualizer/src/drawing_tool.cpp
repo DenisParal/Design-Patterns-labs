@@ -27,7 +27,10 @@ drawing_tool::~drawing_tool()
 
 void drawing_tool::init()
 {
-    window.close();
+    if(window.isOpen())
+    {
+        window.close();
+    }
     window.create(sf::VideoMode(800, 600), "OpenGL");
     window.setActive(true);
 }

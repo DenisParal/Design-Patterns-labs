@@ -24,4 +24,6 @@ int main()
     auto dr = drawing_tool::get();
     line->draw();
     bez->draw();
+
+    delete p1, p2, p3, p4, l, b, r1, r2, line, bez;
 }

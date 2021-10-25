@@ -52,20 +52,26 @@ IPoint* Bezier::get_point(double t)
 //class VisualLine
 
 VisualLine::VisualLine(IPoint* a_ptr, IPoint* b_ptr): Line(a_ptr, b_ptr) {}
-void VisualLine::draw()
+
+IPoint* VisualLine::get_point(double t)
+{
+    return Line::get_point(t);
+}
+
+//class VisualCurve
+void VisualCurve::draw()
 {
     auto drawer = drawing_tool::get();
     drawer->init();
     for(float t=0.0f; t<1.0f;t+=0.1f)
     {
-        drawer->draw_line(get_point(t-0.1f)->get_x(), get_point(t-0.1f)->get_y(), get_point(t)->get_x(), get_point(t)->get_y());
+        IPoint* p1 = get_point(t-0.1f);
+        IPoint* p2 = get_point(t);
+        drawer->draw_line(p1->get_x(), p1->get_y(), p2->get_x(), p2->get_y());
+        delete p1;
+        delete p2;
     }
     drawer->wait();
-}
-
-IPoint* VisualLine::get_point(double t)
-{
-    return Line::get_point(t);
 }
 
 //class VisualBezier
@@ -75,15 +81,4 @@ VisualBezier::VisualBezier(IPoint* a_ptr, IPoint* c_ptr, IPoint* d_ptr, IPoint* 
 IPoint* VisualBezier::get_point(double t)
 {
     return Bezier::get_point(t);
-}
-
-void VisualBezier::draw()
-{
-    auto drawer = drawing_tool::get();
-    drawer->init();
-    for(float t=0.0f; t<1.0f;t+=0.1f)
-    {
-        drawer->draw_line(get_point(t-0.1f)->get_x(), get_point(t-0.1f)->get_y(), get_point(t)->get_x(), get_point(t)->get_y());
-    }
-    drawer->wait();
 }
