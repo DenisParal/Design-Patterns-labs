@@ -1,5 +1,4 @@
 #include <SFML/Graphics.hpp>
-
 class drawing_tool
 {
 private:
@@ -8,7 +7,6 @@ private:
     drawing_tool();
     drawing_tool(const drawing_tool&)=delete;
 public:
-    bool state = false;
     static drawing_tool* get();
     void wait();
     void init();
