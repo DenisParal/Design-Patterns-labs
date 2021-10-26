@@ -60,22 +60,11 @@ public:
     IPoint* get_point(double t) override;
 };
 
-class VisualCurve : public ICurve, public IDrawable
+class VisualCurve : public IDrawable
 {
+private:
+    ICurve* curve;
 public:
     void draw() override;
-};
-
-class VisualLine : public VisualCurve, public Line
-{
-public:
-    VisualLine(IPoint* a_ptr, IPoint* b_ptr);
-    IPoint* get_point(double t) override;
-};
-
-class VisualBezier : public VisualCurve, public Bezier
-{
-public:
-    VisualBezier(IPoint* a_ptr, IPoint* c_ptr, IPoint* d_ptr, IPoint* b_ptr);
-    IPoint* get_point(double t) override;
+    VisualCurve(ICurve* ptr):curve(ptr){}
 };

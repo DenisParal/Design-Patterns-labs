@@ -18,8 +18,8 @@ int main()
     std::cout << r1->get_x() << " " << r1->get_y() << "\n";
     std::cout << r2->get_x() << " " << r2->get_y() << "\n";
 
-    IDrawable* line = new VisualLine(p1, p2);
-    IDrawable* bez = new VisualBezier(p1, p2, p3, p4);
+    IDrawable* line = new VisualCurve(l);
+    IDrawable* bez = new VisualCurve(b);
 
     auto dr = drawing_tool::get();
     line->draw();

@@ -49,15 +49,6 @@ IPoint* Bezier::get_point(double t)
                      std::pow((1 - t), 3) * a->get_y() + 3 * t * std::pow((1 - t), 2) * c->get_y() + 3 * std::pow(t, 2) * (1 - t) * d->get_y() + std::pow(t, 3) * b->get_y());
 }
 
-//class VisualLine
-
-VisualLine::VisualLine(IPoint* a_ptr, IPoint* b_ptr): Line(a_ptr, b_ptr) {}
-
-IPoint* VisualLine::get_point(double t)
-{
-    return Line::get_point(t);
-}
-
 //class VisualCurve
 void VisualCurve::draw()
 {
@@ -65,20 +56,11 @@ void VisualCurve::draw()
     drawer->init();
     for(float t=0.0f; t<1.0f;t+=0.1f)
     {
-        IPoint* p1 = get_point(t-0.1f);
-        IPoint* p2 = get_point(t);
+        IPoint* p1 = curve->get_point(t-0.1f);
+        IPoint* p2 = curve->get_point(t);
         drawer->draw_line(p1->get_x(), p1->get_y(), p2->get_x(), p2->get_y());
         delete p1;
         delete p2;
     }
     drawer->wait();
-}
-
-//class VisualBezier
-
-VisualBezier::VisualBezier(IPoint* a_ptr, IPoint* c_ptr, IPoint* d_ptr, IPoint* b_ptr): Bezier(a_ptr, c_ptr, d_ptr, b_ptr) {}
-
-IPoint* VisualBezier::get_point(double t)
-{
-    return Bezier::get_point(t);
 }
