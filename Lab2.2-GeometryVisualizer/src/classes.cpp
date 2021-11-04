@@ -59,11 +59,11 @@ IPoint* VisualLine::get_point(double t)
 }
 
 //class VisualCurve
-void VisualCurve::draw()
+void VisualCurve::draw(IDrawer* draw_ptr) // 3 different methods to draw first point, curve and last point;
 {
     auto drawer = drawing_tool::get();
     drawer->init();
-    for(float t=0.0f; t<1.0f;t+=0.1f)
+    for(float t=0.1f; t<0.9f;t+=0.1f)
     {
         IPoint* p1 = get_point(t-0.1f);
         IPoint* p2 = get_point(t);

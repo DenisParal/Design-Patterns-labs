@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 project(GeometryVisualizer)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -g")
+set(CMAKE_CXX_FLAGS "-O3 -g")
 
 set(header_path "${${PROJECT_NAME}_SOURCE_DIR}/include")
 set(src_path "${${PROJECT_NAME}_SOURCE_DIR}/src")

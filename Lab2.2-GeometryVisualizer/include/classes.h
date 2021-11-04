@@ -15,10 +15,18 @@ public:
     virtual IPoint* get_point(double t) = 0;
 };
 
+class IDrawer
+{
+public:
+    virtual void draw_beginning(IPoint*) = 0;
+    virtual void draw_segment(IPoint*, IPoint*) = 0;
+    virtual void draw_ending(IPoint*) = 0;
+};
+
 class IDrawable
 {
 public:
-    virtual void draw()=0;
+    virtual void draw(IDrawer*) = 0; // Realize Weak brige (params: object to draw curves)
 };
 
 class Point : public IPoint
@@ -63,7 +71,7 @@ public:
 class VisualCurve : public ICurve, public IDrawable
 {
 public:
-    void draw() override;
+    void draw(IDrawer*) override;
 };
 
 class VisualLine : public VisualCurve, public Line
