@@ -1,6 +1,6 @@
 #include "classes.h"
-#include "drawing_tool.h"
 #include <cmath>
+#include <iostream>
 
 // class Point realization
 
@@ -59,19 +59,24 @@ IPoint* VisualLine::get_point(double t)
 }
 
 //class VisualCurve
-void VisualCurve::draw(IDrawer* draw_ptr) // 3 different methods to draw first point, curve and last point;
+void VisualCurve::draw(IDrawer* draw_begin, IDrawer* draw_segment, IDrawer* draw_end) // 3 different methods to draw first point, curve and last point;
 {
-    auto drawer = drawing_tool::get();
-    drawer->init();
-    for(float t=0.1f; t<0.9f;t+=0.1f)
+    IPoint* fp = get_point(0.0f);
+    draw_begin->draw_beginning(fp);
+    for(float t=0.05f; t<1.0f;t+=0.05f)
     {
-        IPoint* p1 = get_point(t-0.1f);
+        IPoint* p1 = get_point(t-0.05f);
         IPoint* p2 = get_point(t);
-        drawer->draw_line(p1->get_x(), p1->get_y(), p2->get_x(), p2->get_y());
+        draw_segment->draw_segment(p1,p2);
         delete p1;
         delete p2;
     }
-    drawer->wait();
+    IPoint* lp1 = get_point(0.9f);
+    IPoint* lp2 = get_point(1.0f);
+    draw_end->draw_ending(lp1, lp2);
+    delete fp;
+    delete lp1;
+    delete lp2;
 }
 
 //class VisualBezier
@@ -81,4 +86,85 @@ VisualBezier::VisualBezier(IPoint* a_ptr, IPoint* c_ptr, IPoint* d_ptr, IPoint* 
 IPoint* VisualBezier::get_point(double t)
 {
     return Bezier::get_point(t);
+}
+
+//class IDrawer
+
+IDrawer::IDrawer(sf::RenderTexture* picture): picture(picture) {}
+
+//class DrawerLucky
+DrawerLucky::DrawerLucky(sf::RenderTexture* picture):IDrawer(picture){}
+void DrawerLucky::draw_beginning(IPoint* fp)
+{
+    sf::CircleShape circle(10,15);
+    circle.setPosition(sf::Vector2f(fp->get_x()-10, fp->get_y()-10));
+    circle.setOutlineColor(sf::Color::Yellow);
+    circle.setFillColor(sf::Color::Green);
+    picture->draw(circle);
+}
+void DrawerLucky::draw_segment(IPoint* p1, IPoint* p2)
+{
+    sf::VertexArray line(sf::Lines, 2);
+    line[0].position = sf::Vector2f(p1->get_x(), p1->get_y());
+    line[1].position = sf::Vector2f(p2->get_x(), p2->get_y());
+    line[0].color = sf::Color::Green;
+    line[1].color = sf::Color::Green;
+    picture->draw(line);
+}
+void DrawerLucky::draw_ending(IPoint* p1, IPoint* p2)
+{
+    sf::VertexArray triangle(sf::Triangles, 3);
+    triangle[0].position = sf::Vector2f(p2->get_x(), p2->get_y());
+    triangle[0].color = sf::Color::Green;
+    sf::Vector2f vec(p2->get_x()-p1->get_x(), p2->get_y()-p1->get_y());
+
+    sf::Vector2f v1((vec.y * (-1))/2.0f, vec.x/2.0f); //wrong calculations
+    sf::Vector2f v2(vec.y/2.0f, (vec.x * (-1))/2.0f);
+    
+    Point p3(p1->get_x()+v1.x, p1->get_y()+v1.y);
+    Point p4(p1->get_x()+v2.x, p1->get_y()+v2.y);
+
+    triangle[1].position = sf::Vector2f(p3.get_x(), p3.get_y());
+    triangle[1].color = sf::Color::Green;
+
+    triangle[2].position = sf::Vector2f(p4.get_x(), p4.get_y());
+    triangle[2].color = sf::Color::Green;
+
+    picture->draw(triangle);
+}
+
+// class DrawerUnlucky
+
+DrawerUnlucky::DrawerUnlucky(sf::RenderTexture* picture, std::size_t periodicity):IDrawer(picture), periodicity(periodicity), current_per(0){}
+void DrawerUnlucky::draw_beginning(IPoint* fp)
+{
+    sf::RectangleShape rect(sf::Vector2f(10.f, 10.f));
+    rect.setFillColor(sf::Color::Black);
+    rect.setPosition(fp->get_x()-5, fp->get_y()-5);
+    picture->draw(rect);
+}
+void DrawerUnlucky::draw_segment(IPoint* p1, IPoint* p2)
+{
+    if(current_per!= periodicity)
+    {
+        sf::VertexArray line(sf::Lines, 2);
+        line[0].position = sf::Vector2f(p1->get_x(), p1->get_y());
+        line[1].position = sf::Vector2f(p2->get_x(), p2->get_y());
+        line[0].color = sf::Color::Black;
+        line[1].color = sf::Color::Black;
+        picture->draw(line);
+        current_per++;
+    }
+    else
+    {
+        current_per=0;
+    }
+    
+}
+void DrawerUnlucky::draw_ending(IPoint* p1, IPoint* p2)
+{
+    sf::RectangleShape rect(sf::Vector2f(10.f, 10.f));
+    rect.setFillColor(sf::Color::Black);
+    rect.setPosition(p2->get_x()-5, p2->get_y()-5);
+    picture->draw(rect);
 }

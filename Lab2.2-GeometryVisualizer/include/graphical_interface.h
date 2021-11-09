@@ -65,10 +65,21 @@ public:
 
     void display(sf::RenderWindow* window)
     {
-        sf::RectangleShape rectangle(sf::Vector2f(size_x, size_x));
+        sf::Font font;
+        font.loadFromFile("/home/dparanic/Study/Design-Patterns-labs/Lab2.2-GeometryVisualizer/src/arial.ttf");
+
+        sf::RectangleShape rectangle(sf::Vector2f(size_x, size_y));
+        sf::Text button_text(text, font);
+        button_text.setFillColor(sf::Color::Black);
+        button_text.setOutlineThickness(1.0f);
+        button_text.setCharacterSize(25);
+        button_text.setPosition(x+20.0f,y+20.0f);
         rectangle.setFillColor(color);
+        rectangle.setOutlineThickness(1.0f);
+        rectangle.setOutlineColor(sf::Color::Black);
         rectangle.setPosition(x,y);
         window->draw(rectangle);
+        window->draw(button_text);
     }
     void act()
     {
