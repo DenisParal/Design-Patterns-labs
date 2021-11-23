@@ -1,6 +1,10 @@
 #pragma once
 #include "graphical_interface.h"
 
+//Interfaces
+
+const double EPS = 1e-7;
+
 class IPoint
 {
 public:
@@ -18,20 +22,40 @@ public:
 
 class IDrawer
 {
-protected:
-    sf::RenderTexture* picture;
 public:
+    sf::RenderTexture* picture;
     IDrawer(sf::RenderTexture*);
     virtual void draw_beginning(IPoint*) = 0;
     virtual void draw_segment(IPoint*, IPoint*) = 0;
     virtual void draw_ending(IPoint*, IPoint*) = 0;
 };
 
+class DrawCollection : public IDrawer
+{
+private:
+    IDrawer* drawer_begin;
+    IDrawer* drawer_segment;
+    IDrawer* drawer_end;
+public:
+    DrawCollection(IDrawer* drawer_begin, IDrawer* drawer_segment, IDrawer* drawer_end);
+    void draw_beginning(IPoint*) override;
+    void draw_segment(IPoint*, IPoint*) override;
+    void draw_ending(IPoint*, IPoint*) override;
+};
+
 class IDrawable
 {
 public:
-    virtual void draw(IDrawer*, IDrawer*, IDrawer*) = 0; // Realize Weak brige (params: object to draw curves)
+    virtual void draw(IDrawer*) = 0; // Realize Weak brige (params: object to draw curves)
 };
+
+class IStrategy
+{
+public:
+    virtual float operator()(ICurve* curve, float coeff, float step) = 0;
+};
+
+//~Interfaces
 
 class Point : public IPoint
 {
@@ -75,7 +99,7 @@ public:
 class VisualCurve : public ICurve, public IDrawable
 {
 public:
-    void draw(IDrawer*, IDrawer*, IDrawer*) override;
+    void draw(IDrawer*) override;
 };
 
 class VisualLine : public VisualCurve, public Line
@@ -111,4 +135,52 @@ public:
     void draw_beginning(IPoint*) override;
     void draw_segment(IPoint*, IPoint*) override;
     void draw_ending(IPoint*, IPoint*) override;
+};
+
+//Strategies
+
+class getCurveLength : public IStrategy
+{
+public:
+float operator()(ICurve* curve, float coeff, float step) override;
+};
+
+class getCoeff : public IStrategy
+{
+public:
+float operator()(ICurve* curve, float coeff, float step) override;
+};
+
+
+//Decorator
+class Fragment : public ICurve
+{
+private:
+    ICurve* curve;
+    double t_start;
+    double t_finish;
+public:
+    Fragment(ICurve* curve, double t_start, double t_finish);
+    IPoint* get_point(double t) override;
+};
+
+class MoveTo : public ICurve
+{
+private:
+    ICurve* curve;
+    IPoint* point;
+    float sdvig_x=0;
+    float sdvig_y=0;
+public:
+    MoveTo(ICurve* curve, IPoint* point);
+    IPoint* get_point(double t) override;
+};
+
+class DrawableCurve : public VisualCurve
+{
+private:
+    ICurve* curve;
+public:
+    DrawableCurve(ICurve* curve);
+    IPoint* get_point(double t) override;
 };

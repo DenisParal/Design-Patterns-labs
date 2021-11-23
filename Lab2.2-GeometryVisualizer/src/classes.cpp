@@ -59,21 +59,21 @@ IPoint* VisualLine::get_point(double t)
 }
 
 //class VisualCurve
-void VisualCurve::draw(IDrawer* draw_begin, IDrawer* draw_segment, IDrawer* draw_end) // 3 different methods to draw first point, curve and last point;
+void VisualCurve::draw(IDrawer* drawer) 
 {
     IPoint* fp = get_point(0.0f);
-    draw_begin->draw_beginning(fp);
+    drawer->draw_beginning(fp);
     for(float t=0.05f; t<1.0f;t+=0.05f)
     {
         IPoint* p1 = get_point(t-0.05f);
         IPoint* p2 = get_point(t);
-        draw_segment->draw_segment(p1,p2);
+        drawer->draw_segment(p1,p2);
         delete p1;
         delete p2;
     }
     IPoint* lp1 = get_point(0.9f);
     IPoint* lp2 = get_point(1.0f);
-    draw_end->draw_ending(lp1, lp2);
+    drawer->draw_ending(lp1, lp2);
     delete fp;
     delete lp1;
     delete lp2;
@@ -167,4 +167,91 @@ void DrawerUnlucky::draw_ending(IPoint* p1, IPoint* p2)
     rect.setFillColor(sf::Color::Black);
     rect.setPosition(p2->get_x()-5, p2->get_y()-5);
     picture->draw(rect);
+}
+
+
+//DrawerCollection
+
+DrawCollection::DrawCollection(IDrawer* drawer_begin, IDrawer* drawer_segment, IDrawer* drawer_end) : IDrawer(drawer_begin->picture), drawer_begin(drawer_begin), drawer_segment(drawer_segment), drawer_end(drawer_end) {}
+
+void DrawCollection::draw_beginning(IPoint* p)
+{
+    drawer_begin->draw_beginning(p);
+}
+
+void DrawCollection::draw_segment(IPoint* p1, IPoint* p2)
+{
+    drawer_segment->draw_segment(p1,p2);
+}
+
+void DrawCollection::draw_ending(IPoint* p1, IPoint* p2)
+{
+    drawer_end->draw_ending(p1,p2);
+}
+//Strategies impl
+
+float getCurveLength::operator()(ICurve* curve, float coeff, float step)
+{
+    float length = 0.0f;
+    for(float t = 0.0f+step; t <= coeff; t+=step)
+    {
+        IPoint* p1 = curve->get_point(t-step);
+        IPoint* p2 = curve->get_point(t);
+        length += std::sqrt(std::pow((p2->get_x() - p1->get_x()),2)+std::pow((p2->get_y() - p1->get_y()),2));
+    }
+    return length;
+}
+
+float getCoeff::operator()(ICurve* curve, float target_length, float step)
+{
+    float length = 0.0f;
+    for(float t = 0.0f+step; t <= 1.0f; t+=step)
+    {
+        IPoint* p1 = curve->get_point(t-step);
+        IPoint* p2 = curve->get_point(t);
+        length += std::sqrt(std::pow((p2->get_x() - p1->get_x()),2)+std::pow((p2->get_y() - p1->get_y()),2));
+        if(length>=target_length)
+        {
+            return t+step;
+        }
+    }
+    return -1.0f;
+}
+
+// Decorator
+
+Fragment::Fragment(ICurve* curve, double t_start, double t_finish): curve(curve), t_start(t_start), t_finish(t_finish) {}
+IPoint*  Fragment::get_point(double t)
+{
+    return curve->get_point(t_start+(t_finish-t_start)*t);
+}
+
+
+MoveTo::MoveTo(ICurve* curve, IPoint* point): curve(curve), point(point){}
+
+IPoint* MoveTo::get_point(double t)
+{
+    IPoint* p = curve->get_point(t);
+    
+    if(t < EPS)
+    {
+        sdvig_x = p->get_x() - point->get_x();
+        sdvig_y = p->get_y() - point->get_y();
+        p->set_x(point->get_x());
+        p->set_y(point->get_y());
+    }
+    else
+    {
+        p->set_x(p->get_x()- sdvig_x);
+        p->set_y(p->get_y()- sdvig_y);
+    }
+    return p;
+}
+
+//DrawableCurve
+
+DrawableCurve::DrawableCurve(ICurve* curve): curve(curve) {}
+IPoint* DrawableCurve::get_point(double t)
+{
+    return curve->get_point(t);
 }
